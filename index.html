@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<!-- 手机浏览器适配：宽度跟随屏幕，禁止缩放 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>番茄钟 · 专注计时</title>
+<!-- 站点图标 -->
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<!-- 样式表 -->
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-cat">
+
+<!-- 背景插画1：可爱猫咪（右下角，不遮挡文字） -->
+<img id="catArt" class="corner-art" src="assets/cat.svg" width="120" height="120" alt="">
+
+<!-- 背景插画2：简约书桌学习（右下角，不遮挡文字） -->
+<img id="deskArt" class="corner-art" src="assets/desk.svg" width="150" height="150" alt="">
+
+<div class="app">
+  <header>
+    <div>
+      <h1>🍅 番茄钟</h1>
+      <div class="sub">专注每一刻 · 今天也要加油呀</div>
+    </div>
+    <button class="btn-bg" id="btnBg">🌿 切换背景</button>
+  </header>
+
+  <!-- 顶部 Tab：计时 / 任务 / 统计 / 笔记 -->
+  <nav class="tabs">
+    <button data-panel="timer" class="active">⏰ 计时</button>
+    <button data-panel="tasks">📋 任务</button>
+    <button data-panel="stats">📊 统计</button>
+    <button data-panel="notes">💭 笔记</button>
+  </nav>
+
+  <!-- ================= 计时面板 ================= -->
+  <section id="panel-timer" class="panel">
+    <div class="card">
+      <div class="mode-switch">
+        <button id="modeCountdown" class="active">⏳ 倒计时</button>
+        <button id="modeStopwatch">⏱ 累计计时</button>
+      </div>
+    </div>
+
+    <div class="card timer-card">
+      <div class="time" id="timeDisplay">25:00</div>
+      <div class="set-row" id="setRow">
+        <input id="minInput" type="number" min="1" max="180" value="25">
+        <span>分钟 / 每轮</span>
+      </div>
+      <div class="controls">
+        <button class="ctrl btn-start" id="btnStart">开始</button>
+        <button class="ctrl btn-pause" id="btnPause" disabled>暂停</button>
+        <button class="ctrl btn-reset" id="btnReset">重置</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>本次专注的项目（大项目 / 子任务）</label>
+      <div class="select-row">
+        <select id="projSelect"><option value="">未选择大项目</option></select>
+        <select id="taskSelect"><option value="">子任务 · 通用</option></select>
+      </div>
+      <label class="mt">音频（计时进行时播放，暂停同步暂停）</label>
+      <div class="audio-chips">
+        <button class="audio-btn active" data-audio="off">🔕 关闭</button>
+        <button class="audio-btn" data-audio="forest">🌲 森林白噪音</button>
+        <button class="audio-btn" data-audio="rain">🌧 雨声白噪音</button>
+        <button class="audio-btn" data-audio="piano">🎹 钢琴轻音乐</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 任务面板 ================= -->
+  <section id="panel-tasks" class="panel hidden">
+    <div class="card">
+      <label>新建大项目</label>
+      <div class="task-row">
+        <input id="projInput" placeholder="如：浙江省考行测" maxlength="20">
+        <button class="btn-save" id="btnAddProj">添加</button>
+      </div>
+      <label class="mt">标签（逗号分隔，或点选快捷标签）</label>
+      <input id="tagInput" placeholder="如：行测,申论" maxlength="30" style="width:100%;padding:11px 14px;border:1.5px solid #EADDC8;border-radius:12px;background:#FEFBF5;outline:none;font-size:16px;">
+      <div class="quick-tags">
+        <button class="qtag" data-tag="行测">行测</button>
+        <button class="qtag" data-tag="申论">申论</button>
+        <button class="qtag" data-tag="常识">常识</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>筛选查看对应大项目下的子任务</label>
+      <select id="projFilter"><option value="">全部大项目</option></select>
+    </div>
+
+    <div id="projList"></div>
+  </section>
+
+  <!-- ================= 统计面板 ================= -->
+  <section id="panel-stats" class="panel hidden">
+    <div class="card">
+      <div class="stat-tabs">
+        <button data-range="today" class="active">今日</button>
+        <button data-range="week">本周</button>
+        <button data-range="month">本月</button>
+      </div>
+      <div class="total-line"><span id="rangeLabel">今日总专注</span><b id="totalTime">0 分钟</b></div>
+      <label>按标签筛选统计</label>
+      <div id="statTagChips"><button class="tag-chip active" data-tag="">全部</button></div>
+    </div>
+    <div class="card">
+      <div class="summary-title">📊 分项目统计</div>
+      <div id="statList"></div>
+    </div>
+    <div class="card">
+      <button class="btn-export" id="btnExport">📤 导出学习记录文本</button>
+    </div>
+  </section>
+
+  <!-- ================= 笔记面板 ================= -->
+  <section id="panel-notes" class="panel hidden">
+    <div class="card">
+      <label>记录学习心得 / 反思 / 感悟</label>
+      <textarea id="noteInput" rows="4" placeholder="今天学到了什么？有什么想对自己说的…" maxlength="500"></textarea>
+      <button class="btn-save wide" id="btnSaveNote">保存笔记</button>
+    </div>
+    <div class="card">
+      <div class="summary-title">📝 我的笔记</div>
+      <div id="noteList"></div>
+    </div>
+  </section>
+
+  <div class="foot">所有数据保存在本机浏览器 localStorage 中</div>
+</div>
+
+<!-- 逻辑脚本 -->
+<script src="js/app.js"></script>
+</body>
+</html>
